@@ -1,3 +1,4 @@
-﻿  main.cpp
-D:\GitHub\CSUY3113\Project3\SDLProject\main.cpp(45,23): warning C4018: '<': signed/unsigned mismatch
+﻿  Entity.cpp
+D:\GitHub\CSUY3113\Project3\SDLProject\Entity.cpp(54): warning C4715: 'Entity::CheckCollisionsYGoal': not all control paths return a value
+D:\GitHub\CSUY3113\Project3\SDLProject\Entity.cpp(80): warning C4715: 'Entity::CheckCollisionsXGoal': not all control paths return a value
   SDLProject.vcxproj -> D:\GitHub\CSUY3113\Project3\SDLProject\Debug\SDLProject.exe

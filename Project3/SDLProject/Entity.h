@@ -20,7 +20,7 @@ public:
     float speed;
     float width = 1;
     float height = 1;
-    int type; //0 = Player, 1 = Goal, 2 = Wall
+    int typeT = 0; //0 = Player, 1 = Goal, 2 = Wall
     bool isActive = true;
     bool collidedTop = false;
     bool collidedBottom = false;

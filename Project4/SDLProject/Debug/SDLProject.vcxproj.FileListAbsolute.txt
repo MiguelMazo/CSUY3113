@@ -1,0 +1,10 @@
+C:\SDLProject\Debug\SDLProject.exe
+C:\SDLProject\Debug\SDLProject.pdb
+D:\GitHub\CSUY3113\Project1\SDLProject\Debug\SDLProject.exe
+D:\GitHub\CSUY3113\Project1\SDLProject\Debug\SDLProject.pdb
+D:\GitHub\CSUY3113\Project2\SDLProject\Debug\SDLProject.exe
+D:\GitHub\CSUY3113\Project2\SDLProject\Debug\SDLProject.pdb
+D:\GitHub\CSUY3113\Project3\SDLProject\Debug\SDLProject.exe
+D:\GitHub\CSUY3113\Project3\SDLProject\Debug\SDLProject.pdb
+D:\GitHub\CSUY3113\Project4\SDLProject\Debug\SDLProject.exe
+D:\GitHub\CSUY3113\Project4\SDLProject\Debug\SDLProject.pdb

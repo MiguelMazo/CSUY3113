@@ -1,0 +1,13 @@
+﻿  Entity.cpp
+D:\GitHub\CSUY3113\Project4\Project4\SDLProject\Entity.h(28,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\GitHub\CSUY3113\Project4\Project4\SDLProject\Entity.h(29,18): warning C4305: 'initializing': truncation from 'double' to 'float'
+  main.cpp
+D:\GitHub\CSUY3113\Project4\Project4\SDLProject\Entity.h(28,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\GitHub\CSUY3113\Project4\Project4\SDLProject\Entity.h(29,18): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\GitHub\CSUY3113\Project4\Project4\SDLProject\main.cpp(49,23): warning C4018: '<': signed/unsigned mismatch
+D:\GitHub\CSUY3113\Project4\Project4\SDLProject\main.cpp(482,37): warning C4305: '=': truncation from 'double' to 'float'
+D:\GitHub\CSUY3113\Project4\Project4\SDLProject\main.cpp(483,38): warning C4305: '=': truncation from 'double' to 'float'
+  ShaderProgram.cpp
+  Generating Code...
+  LINK : D:\GitHub\CSUY3113\Project4\Project4\SDLProject\Debug\SDLProject.exe not found or not built by the last incremental link; performing full link
+  SDLProject.vcxproj -> D:\GitHub\CSUY3113\Project4\Project4\SDLProject\Debug\SDLProject.exe

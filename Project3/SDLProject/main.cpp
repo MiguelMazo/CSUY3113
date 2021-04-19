@@ -17,12 +17,10 @@
 #include "Entity.h"
 
 int GOAL_COUNT = 3;
-int WALL_COUNT = 25;
 struct GameState {
     int status = 0;
     Entity* player;
     Entity* goal;
-    Entity* walls;
 };
 
 GameState state;
@@ -151,7 +149,6 @@ void Initialize() {
     state.player->width = 0.8f;
 
     state.goal = new Entity[GOAL_COUNT];
-    state.walls = new Entity[WALL_COUNT];
     GLuint platformTextureID = LoadTexture("platformPack_tile001.png");
     GLuint wallsTextureID = LoadTexture("platformPack_tile007.png");
     fontTextureID = LoadTexture("font1.png");
@@ -168,87 +165,6 @@ void Initialize() {
     for (int i = 0; i < GOAL_COUNT; i++) {
         state.goal[i].Update(0, NULL, 0, NULL, 0);
         state.goal[i].setType(1);
-    }
-
-    //Make the walls
-    state.walls[0].textureID = wallsTextureID;
-    state.walls[0].position = glm::vec3(4.5, -4, 0);
-
-    state.walls[1].textureID = wallsTextureID;
-    state.walls[1].position = glm::vec3(4.5, -3, 0);
-
-    state.walls[2].textureID = wallsTextureID;
-    state.walls[2].position = glm::vec3(4.5, -2, 0);
-
-    state.walls[3].textureID = wallsTextureID;
-    state.walls[3].position = glm::vec3(4.5, -1, 0);
-
-    state.walls[4].textureID = wallsTextureID;
-    state.walls[4].position = glm::vec3(4.5, 0, 0);
-
-    state.walls[5].textureID = wallsTextureID;
-    state.walls[5].position = glm::vec3(4.5, 1, 0);
-
-    state.walls[6].textureID = wallsTextureID;
-    state.walls[6].position = glm::vec3(4.5, 2, 0);
-
-    state.walls[7].textureID = wallsTextureID;
-    state.walls[7].position = glm::vec3(4.5, 3, 0);
-
-    state.walls[8].textureID = wallsTextureID;
-    state.walls[8].position = glm::vec3(4.5, 4, 0);
-
-    state.walls[9].textureID = wallsTextureID;
-    state.walls[9].position = glm::vec3(-4.5, -4, 0);
-
-    state.walls[10].textureID = wallsTextureID;
-    state.walls[10].position = glm::vec3(-4.5, -3, 0);
-
-    state.walls[11].textureID = wallsTextureID;
-    state.walls[11].position = glm::vec3(-4.5, -2, 0);
-
-    state.walls[12].textureID = wallsTextureID;
-    state.walls[12].position = glm::vec3(-4.5, -1, 0);
-
-    state.walls[13].textureID = wallsTextureID;
-    state.walls[13].position = glm::vec3(-4.5, 0, 0);
-
-    state.walls[14].textureID = wallsTextureID;
-    state.walls[14].position = glm::vec3(-4.5, 1, 0);
-
-    state.walls[15].textureID = wallsTextureID;
-    state.walls[15].position = glm::vec3(-4.5, 2, 0);
-
-    state.walls[16].textureID = wallsTextureID;
-    state.walls[16].position = glm::vec3(-4.5, 3, 0);
-
-    state.walls[17].textureID = wallsTextureID;
-    state.walls[17].position = glm::vec3(-4.5, 4, 0);
-
-    state.walls[18].textureID = wallsTextureID;
-    state.walls[18].position = glm::vec3(1, .75, 0);
-
-    state.walls[19].textureID = wallsTextureID;
-    state.walls[19].position = glm::vec3(-1, .75, 0);
-
-    state.walls[20].textureID = wallsTextureID;
-    state.walls[20].position = glm::vec3(0, .75, 0);
-
-    state.walls[21].textureID = wallsTextureID;
-    state.walls[21].position = glm::vec3(-2, -3.75, 0);
-
-    state.walls[22].textureID = wallsTextureID;
-    state.walls[22].position = glm::vec3(-3, -3.75, 0);
-
-    state.walls[23].textureID = wallsTextureID;
-    state.walls[23].position = glm::vec3(2, -3.75, 0);
-
-    state.walls[24].textureID = wallsTextureID;
-    state.walls[24].position = glm::vec3(3, -3.75, 0);
-    
-    for (int i = 0; i < WALL_COUNT; i++) {
-        state.walls[i].Update(0, NULL, 0, NULL, 0);
-        state.goal[i].setType(2);
     }
 }
 
@@ -315,7 +231,7 @@ void Update() {
 
         while (deltaTime >= FIXED_TIMESTEP) {
             // Update. Notice it's FIXED_TIMESTEP. Not deltaTime
-            state.status = state.player->Update(FIXED_TIMESTEP, state.goal, GOAL_COUNT, state.walls, WALL_COUNT);
+            state.status = state.player->Update(FIXED_TIMESTEP, state.goal, GOAL_COUNT, state.map);
 
             deltaTime -= FIXED_TIMESTEP;
         }

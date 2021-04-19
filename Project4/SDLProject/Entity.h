@@ -10,7 +10,7 @@
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
-
+#include "Map.h"
 enum EntityType {PLAYER, PLATFORM, ENEMY};
 enum AIType {WALKER, WAITANDGO, RUNAWAY};
 enum AIState { IDLE, WALKING, ATTACKING };
@@ -60,13 +60,13 @@ public:
 
     void setType(int id);
     bool CheckCollision(Entity* other);
-    int Update(float deltaTime, Entity* walls, int wallCount, Entity *player, Entity* enemies, int enemyCount);
+    int Update(float deltaTime, Entity *player, Entity* objects, int objectCount, Map* map);
     void Render(ShaderProgram* program);
     void DrawSpriteFromTextureAtlas(ShaderProgram* program, GLuint textureID, int index);
-    int CheckCollisionsYGoal(Entity* objects, int objectCount);
-    int CheckCollisionsXGoal(Entity* objects, int objectCount);
-    int CheckCollisionsYWall(Entity* objects, int objectCount);
-    int CheckCollisionsXWall(Entity* objects, int objectCount);
+    int CheckCollisionsY(Entity* objects, int objectCount);
+    int CheckCollisionsX(Entity* objects, int objectCount);
+    void CheckCollisionsX(Map* map);
+    void CheckCollisionsY(Map* map);
     void AI(Entity *player);
     void AIWalker(Entity *player);
     void AIWaitAndGo(Entity* player);

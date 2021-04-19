@@ -29,64 +29,8 @@ bool Entity::CheckCollision(Entity* other) {
     return false;
 }
 
-int Entity::CheckCollisionsYGoal(Entity* objects, int objectCount)
-{
-    for (int i = 0; i < objectCount; i++)
-    {
-        Entity* object = &objects[i];
 
-        if (CheckCollision(object))
-        {
-            float ydist = fabs(position.y - object->position.y);
-            float penetrationY = fabs(ydist - (height / 2.0f) - (object->height / 2.0f));
-            if (velocity.y > 0) {
-                position.y -= penetrationY;
-                velocity.y = 0;
-                collidedTop = true;
-            }
-            else if (velocity.y < 0) {
-                position.y += penetrationY;
-                velocity.y = 0;
-                collidedBottom = true;
-            }
-
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-int Entity::CheckCollisionsXGoal(Entity* objects, int objectCount)
-{
-    for (int i = 0; i < objectCount; i++)
-    {
-        Entity* object = &objects[i];
-
-        if (CheckCollision(object))
-        {
-            float xdist = fabs(position.x - object->position.x);
-            float penetrationX =  fabs(xdist - (width / 2.0f) - (object->width / 2.0f));
-            if (velocity.x > 0) {
-                position.x -= penetrationX;
-                velocity.x = 0;
-                collidedRight = true;
-            }
-            else if (velocity.x < 0) {
-                position.x += penetrationX;
-                velocity.x = 0;
-                collidedLeft = true;
-            }
-
-            return i;
-        }
-    }
-
-    //No Collision
-    return -1;
-}
-
-int Entity::CheckCollisionsYWall(Entity* objects, int objectCount)
+int Entity::CheckCollisionsY(Entity* objects, int objectCount)
 {
     for (int i = 0; i < objectCount; i++)
     {
@@ -114,7 +58,54 @@ int Entity::CheckCollisionsYWall(Entity* objects, int objectCount)
     return 0;
 }
 
-int Entity::CheckCollisionsXWall(Entity* objects, int objectCount)
+
+void Entity::CheckCollisionsY(Map* map)
+{
+    // Probes for tiles
+    glm::vec3 top = glm::vec3(position.x, position.y + (height / 2), position.z);
+    glm::vec3 top_left = glm::vec3(position.x - (width / 2), position.y + (height / 2), position.z);
+    glm::vec3 top_right = glm::vec3(position.x + (width / 2), position.y + (height / 2), position.z);
+
+    glm::vec3 bottom = glm::vec3(position.x, position.y - (height / 2), position.z);
+    glm::vec3 bottom_left = glm::vec3(position.x - (width / 2), position.y - (height / 2), position.z);
+    glm::vec3 bottom_right = glm::vec3(position.x + (width / 2), position.y - (height / 2), position.z);
+
+    float penetration_x = 0;
+    float penetration_y = 0;
+
+    if (map->IsSolid(top, &penetration_x, &penetration_y) && velocity.y > 0) {
+        position.y -= penetration_y;
+        velocity.y = 0;
+        collidedTop = true;
+    }
+    else if (map->IsSolid(top_left, &penetration_x, &penetration_y) && velocity.y > 0) {
+        position.y -= penetration_y;
+        velocity.y = 0;
+        collidedTop = true;
+    }
+    else if (map->IsSolid(top_right, &penetration_x, &penetration_y) && velocity.y > 0) {
+        position.y -= penetration_y;
+        velocity.y = 0;
+        collidedTop = true;
+    }
+    if (map->IsSolid(bottom, &penetration_x, &penetration_y) && velocity.y < 0) {
+        position.y += penetration_y;
+        velocity.y = 0;
+        collidedBottom = true;
+    }
+    else if (map->IsSolid(bottom_left, &penetration_x, &penetration_y) && velocity.y < 0) {
+        position.y += penetration_y;
+        velocity.y = 0;
+        collidedBottom = true;
+    }
+    else if (map->IsSolid(bottom_right, &penetration_x, &penetration_y) && velocity.y < 0) {
+        position.y += penetration_y;
+        velocity.y = 0;
+        collidedBottom = true;
+    }
+}
+
+int Entity::CheckCollisionsX(Entity* objects, int objectCount)
 {
     for (int i = 0; i < objectCount; i++)
     {
@@ -136,12 +127,36 @@ int Entity::CheckCollisionsXWall(Entity* objects, int objectCount)
             }
 
             
-            return 2;
+            return 0;
         }
     }
 
     return 0;
 }
+
+
+void Entity::CheckCollisionsX(Map* map)
+{
+    // Probes for tiles
+    glm::vec3 left = glm::vec3(position.x - (width / 2), position.y, position.z);
+    glm::vec3 right = glm::vec3(position.x + (width / 2), position.y, position.z);
+
+    float penetration_x = 0;
+    float penetration_y = 0;
+
+    if (map->IsSolid(left, &penetration_x, &penetration_y) && velocity.x < 0) {
+        position.x += penetration_x;
+        velocity.x = 0;
+        collidedLeft = true;
+    }
+
+    if (map->IsSolid(right, &penetration_x, &penetration_y) && velocity.x > 0) {
+        position.x -= penetration_x;
+        velocity.x = 0;
+        collidedRight = true;
+    }
+}
+
 
 void Entity::AIRunaway(Entity* player) {
     switch (aiState) {
@@ -218,7 +233,7 @@ void Entity::AI(Entity *player) {
 }
 
 //int Entity::Update(float deltaTime, Entity* platforms, int platformCount, Entity* walls, int wallCount)//0 = game continue 1 = win 2 = lose
-int Entity::Update(float deltaTime, Entity* walls, int wallCount, Entity *player, Entity* enemies, int enemyCount)//0 = game continue 1 = win 2 = lose
+int Entity::Update(float deltaTime, Entity *player, Entity* objects, int objectCount, Map* map)//0 = game continue 1 = win 2 = lose
 {
     if (isActive == false) return 0;
     
@@ -268,56 +283,21 @@ int Entity::Update(float deltaTime, Entity* walls, int wallCount, Entity *player
     }
 
     velocity.x = movement.x * speed;
-    velocity.y += acceleration.y * deltaTime;
-    position += movement * speed * deltaTime;
+    velocity += acceleration * deltaTime;
+    //position += movement * speed * deltaTime;
 
-    position.x += velocity.x * deltaTime; // Move on X
     //goalX = CheckCollisionsXGoal(platforms, platformCount);// Fix if needed
-    wallX = CheckCollisionsXWall(walls, wallCount);
-    if (entityType == PLAYER) {
-        goalX = CheckCollisionsXGoal(enemies, enemyCount);
-    }
 
     position.y += velocity.y * deltaTime; // Move on Y
-    //goalY = CheckCollisionsYGoal(platforms, platformCount);// Fix if needed
-    wallY = CheckCollisionsYWall(walls, wallCount);// Fix if needed
-    if (entityType == PLAYER) {
-        goalY = CheckCollisionsYGoal(enemies, enemyCount);
-    }
+    CheckCollisionsY(map);
+    CheckCollisionsY(objects, objectCount); // Fix if needed
 
-    
+
+    position.x += velocity.x * deltaTime; // Move on X
+    CheckCollisionsX(map);
+    CheckCollisionsX(objects, objectCount); // Fix if needed
     modelMatrix = glm::mat4(1.0f);
-    modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f, 0.5, 1.0f));
     modelMatrix = glm::translate(modelMatrix, position);
-
-
-    //Goal 
-    
-    if (goalY > -1 || goalX > -1) {
-        if (collidedBottom == true) {
-            if (enemiesToDefeat == 1) {
-                enemies[goalY].isActive = false;
-                return 1;
-            }
-
-            else {
-                enemiesToDefeat -= 1;
-                enemies[goalY].isActive = false;
-            }
-        }
-
-        else {
-            isActive = false;
-            return 2;
-        }
-    }
-    
-
-    //cout << collidedBottom << " , " << airJumps << "\n";
-    //if (collidedBottom == true) {
-    //    airJumps = 1;
-    //}
-
     return 0;
 }
 

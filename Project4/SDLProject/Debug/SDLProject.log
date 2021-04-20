@@ -1,4 +1,0 @@
-﻿  Scene.cpp
-D:\GitHub\CSUY3113\Project4\SDLProject\Entity.h(28,17): warning C4305: 'initializing': truncation from 'double' to 'float'
-D:\GitHub\CSUY3113\Project4\SDLProject\Entity.h(29,18): warning C4305: 'initializing': truncation from 'double' to 'float'
-  SDLProject.vcxproj -> D:\GitHub\CSUY3113\Project4\SDLProject\Debug\SDLProject.exe

@@ -1,0 +1,4 @@
+﻿  main.cpp
+D:\GitHub\CSUY3113\Project5\SDLProject\Entity.h(29,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\GitHub\CSUY3113\Project5\SDLProject\Entity.h(30,18): warning C4305: 'initializing': truncation from 'double' to 'float'
+  SDLProject.vcxproj -> D:\GitHub\CSUY3113\Project5\SDLProject\Debug\SDLProject.exe

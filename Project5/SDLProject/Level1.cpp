@@ -41,6 +41,8 @@ void Level1::Initialize() {
     state.player->entityType = PLAYER;
     state.player->enemiesToDefeat = LEVEL1_ENEMYCOUNT;
 
+    state.lives = 3;
+    state.player->lives = state.lives;
     state.enemies = new Entity[LEVEL1_ENEMYCOUNT];
     GLuint enemyTextureID = Util::LoadTexture("alien.png");
 
@@ -73,6 +75,7 @@ void Level1::Update(float deltaTime) {
     if (state.player->position.y < -8) {
         //cout << "IM HERE RN!\n" << state.player->position.y <<"\n";
         state.player->lives -= 1;
+        state.player->lostLifeFlag = true;
         state.player->position = glm::vec3(5.0, 0.0, 0.0);
         if (state.player->lives == 0) {
             state.player->isActive = false;
@@ -80,6 +83,7 @@ void Level1::Update(float deltaTime) {
     }
     if (state.player->position.x >= 19 && state.player->position.y <= 11) {
         state.nextScene = 2;
+        state.lives = state.player->lives;
     }
 }
 int Level1::Render(ShaderProgram* program) {

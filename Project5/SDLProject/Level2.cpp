@@ -38,33 +38,23 @@ void Level2::Initialize() {
     state.player->entityType = PLAYER;
     state.player->enemiesToDefeat = LEVEL2_ENEMYCOUNT;
 
+    state.player->lives = state.lives;
+
     state.enemies = new Entity[LEVEL2_ENEMYCOUNT];
     GLuint enemyTextureID = Util::LoadTexture("alien.png");
 
     state.enemies[0].textureID = enemyTextureID;
-    state.enemies[0].position = glm::vec3(0.0, 1.0, 0.0);
-    state.enemies[0].jumpTimer = 1.0f;
-    state.enemies[0].speed = 1.0f;
+    state.enemies[0].position = glm::vec3(7, -2, 0.0);
+    state.enemies[0].jumpTimer = 2.5f;
+    state.enemies[0].speed = 2.0f;
     state.enemies[0].aiType = WAITANDGO;
-
-    state.enemies[1].textureID = enemyTextureID;
-    state.enemies[1].position = glm::vec3(1.0, 1.0, 0.0);
-    state.enemies[1].jumpTimer = 2.5f;
-    state.enemies[1].speed = 2.0f;
-    state.enemies[1].aiType = WALKER;
-
-    state.enemies[2].textureID = enemyTextureID;
-    state.enemies[2].position = glm::vec3(-1.0, 1.0, 0.0);
-    state.enemies[2].jumpTimer = 5.0f;
-    state.enemies[2].speed = 3.0f;
-    state.enemies[2].aiType = RUNAWAY;
 
 
     for (int i = 0; i < LEVEL2_ENEMYCOUNT; i++) {
         state.enemies[i].acceleration = glm::vec3(0.0, -9.0, 0.0);
         state.enemies[i].speed = 1.0f;
         state.enemies[i].entityType = ENEMY;
-        state.enemies[i].Update(0, state.player, 0, NULL, state.map);
+        state.enemies[i].Update(0, state.player, NULL, 0, state.map);
         state.enemies[i].width = 0.8;
         state.enemies[i].height = 0.8;
         state.enemies[i].aiState = IDLE;
@@ -73,14 +63,38 @@ void Level2::Initialize() {
 }
 void Level2::Update(float deltaTime) {
     state.player->Update(deltaTime, state.player, state.enemies, LEVEL2_ENEMYCOUNT, state.map);
+    for (int i = 0; i < LEVEL2_ENEMYCOUNT; i++) {
+        state.enemies[i].Update(deltaTime, state.player, state.enemies, LEVEL2_ENEMYCOUNT, state.map);
+        //state.enemies[i].Update(deltaTime, state.player, state.enemies, LEVEL1_ENEMYCOUNT, state.map);
+    }
+
+    if (state.player->position.y < -8) {
+        //cout << "IM HERE RN!\n" << state.player->position.y <<"\n";
+        state.player->lives -= 1;
+        state.player->lostLifeFlag = true;
+        state.player->position = glm::vec3(5.0, 0.0, 0.0);
+        if (state.player->lives == 0) {
+            state.player->isActive = false;
+        }
+    }
 
     if (state.player->position.x >= 13 && state.player->position.y <= 5) {
         state.nextScene = 3;
+        state.lives = state.player->lives;
     }
 }
 
 int Level2::Render(ShaderProgram* program) {
     state.map->Render(program);
     state.player->Render(program);
+
+    if (state.player->isActive == false) {
+        return 1;
+    }
+
+    for (int i = 0; i < LEVEL2_ENEMYCOUNT; i++) {
+        state.enemies[i].Render(program);
+    }
+
     return 0;
 }

@@ -18,6 +18,9 @@ void Entity::setType(int id) {
 }
 
 bool Entity::CheckCollision(Entity* other) {
+    if (other == this) {
+        return false;
+    }
     if (isActive == false || other->isActive == false) {
         return false;
     }
@@ -44,11 +47,19 @@ int Entity::CheckCollisionsY(Entity* objects, int objectCount)
                 position.y -= penetrationY;
                 velocity.y = 0;
                 collidedTop = true;
+
+                if (entityType == PLAYER and object->entityType == ENEMY) {
+                    loseLife(this);
+                }
             }
             else if (velocity.y < 0) {
                 position.y += penetrationY;
                 velocity.y = 0;
                 collidedBottom = true;
+
+                if (object->entityType == ENEMY) {
+                    object->isActive = false;
+                }
             }
 
             return 2;
@@ -119,11 +130,19 @@ int Entity::CheckCollisionsX(Entity* objects, int objectCount)
                 position.x -= penetrationX;
                 velocity.x = 0;
                 collidedRight = true;
+
+                if (entityType == PLAYER and object->entityType == ENEMY) {
+                    loseLife(this);
+                }
             }
             else if (velocity.x < 0) {
                 position.x += penetrationX;
                 velocity.x = 0;
                 collidedLeft = true;
+
+                if (entityType == PLAYER and object->entityType == ENEMY) {
+                    loseLife(this);
+                }
             }
 
             
@@ -208,9 +227,9 @@ void Entity::AIWalker(Entity *player) {
         aiState = WALKING;
         break;
     case WALKING:
-        if (position.x < -8.5 || position.x > 8.5) {
-            reverse *= -1;
-        }
+        //if (position.x < -8.5 || position.x > 8.5) {
+        //    reverse *= -1;
+        //}
         
         movement = glm::vec3(1 * reverse, 0, 0);
 
@@ -235,6 +254,7 @@ void Entity::AI(Entity *player) {
 //int Entity::Update(float deltaTime, Entity* platforms, int platformCount, Entity* walls, int wallCount)//0 = game continue 1 = win 2 = lose
 int Entity::Update(float deltaTime, Entity *player, Entity* objects, int objectCount, Map* map)//0 = game continue 1 = win 2 = lose
 {
+
     if (isActive == false) return 0;
     
     collidedTop = false;
@@ -282,6 +302,9 @@ int Entity::Update(float deltaTime, Entity *player, Entity* objects, int objectC
         velocity.y += jumpPower;
     }
 
+    if (entityType == ENEMY) {
+        cout << position.x << " " << position.y << "\n";
+    }
     velocity.x = movement.x * speed;
     velocity += acceleration * deltaTime;
     //position += movement * speed * deltaTime;
@@ -303,6 +326,14 @@ int Entity::Update(float deltaTime, Entity *player, Entity* objects, int objectC
     return 0;
 }
 
+void Entity::loseLife(Entity* player) {
+    player->lives -= 1;
+    player->lostLifeFlag = true;
+    player->position = glm::vec3(5.0, 0.0, 0.0);
+    if (player->lives == 0) {
+        player->isActive = false;
+    }
+}
 void Entity::DrawSpriteFromTextureAtlas(ShaderProgram* program, GLuint textureID, int index)
 {
 

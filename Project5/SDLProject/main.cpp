@@ -20,6 +20,7 @@
 #include "Level3.h"
 #include "MainMenu.h"
 #include <iostream>
+#include <SDL_mixer.h>
 using namespace std;
 
 float timerCurrent = 0.0f;
@@ -29,8 +30,10 @@ bool gameIsRunning = true;
 
 ShaderProgram program;
 glm::mat4 viewMatrix, modelMatrix, projectionMatrix;
-GLuint fontTextureID;
 
+GLuint fontTextureID;
+Mix_Music* music;
+Mix_Chunk* loseLife;
 
 Scene* currentScene;
 Scene* sceneList[4];
@@ -43,7 +46,7 @@ void SwitchToScene(Scene* scene) {
 
 
 void Initialize() {
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
     displayWindow = SDL_CreateWindow("Textured!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_OPENGL);
     SDL_GLContext context = SDL_GL_CreateContext(displayWindow);
     SDL_GL_MakeCurrent(displayWindow, context);
@@ -55,6 +58,13 @@ void Initialize() {
     glViewport(0, 0, 640, 480);
 
     program.Load("shaders/vertex_textured.glsl", "shaders/fragment_textured.glsl");
+
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+    music = Mix_LoadMUS("dooblydoo.mp3");
+    Mix_PlayMusic(music, -1);
+    Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
+
+    loseLife = Mix_LoadWAV("failure.wav");
 
     viewMatrix = glm::mat4(1.0f);
     modelMatrix = glm::mat4(1.0f);
@@ -100,9 +110,10 @@ void ProcessInput() {
             case SDLK_RIGHT:
                 // Move the player right
                 break;
+
             case SDLK_RETURN:
                 if (currentScene->state.isMainMenu == true) {
-                    SwitchToScene(sceneList[3]);
+                    SwitchToScene(sceneList[1]);
                  }
                 break;
 
@@ -169,6 +180,15 @@ void Update() {
 
     //cout << "IM HERE";
     // Inside Update
+
+    if (currentScene->state.player->lostLifeFlag == true) {
+        cout << currentScene->state.player->lostLifeFlag;
+        Mix_PlayChannel(-1, loseLife, 0);
+        currentScene->state.player->lostLifeFlag = false;
+        Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
+    }
+
+
     viewMatrix = glm::mat4(1.0f);
     if (currentScene->state.player->position.x > 5) {
        // cout << "FOLOWING\n";
@@ -212,7 +232,11 @@ int main(int argc, char* argv[]) {
         ProcessInput();
         Update();
 
-        if (currentScene->state.nextScene >= 0) SwitchToScene(sceneList[currentScene->state.nextScene]);
+        if (currentScene->state.nextScene >= 0) {
+            Scene* nextScene = sceneList[currentScene->state.nextScene];
+            nextScene->state.lives = currentScene->state.lives;
+            SwitchToScene(sceneList[currentScene->state.nextScene]);
+        }
         Render();
     }
 

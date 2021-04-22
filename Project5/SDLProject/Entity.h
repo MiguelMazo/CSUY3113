@@ -45,11 +45,11 @@ public:
     int reverse = -1;
     int enemiesToDefeat; 
     int lives = 3;
+    bool lostLifeFlag = false;
     int* animRight = NULL;
     int* animLeft = NULL;
     int* animUp = NULL;
     int* animDown = NULL;
-
     int* animIndices = NULL;
     int animFrames = 0;
     int animIndex = 0;
@@ -72,4 +72,5 @@ public:
     void AIWalker(Entity *player);
     void AIWaitAndGo(Entity* player);
     void AIRunaway(Entity* player);
+    void loseLife(Entity* player);
 };

@@ -17,6 +17,7 @@ struct GameState {
 	Entity* player;
 	Entity* enemies;
 	int nextScene;
+	int lives;
 	bool isMainMenu = false;
 };
 class Scene {

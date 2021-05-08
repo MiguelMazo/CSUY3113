@@ -1,0 +1,6 @@
+﻿  MainMenu.cpp
+D:\GitHub\CSUY3113\Project6\SDLProject\Entity.h(34,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\GitHub\CSUY3113\Project6\SDLProject\Entity.h(35,18): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\GitHub\CSUY3113\Project6\SDLProject\MainMenu.cpp(58,37): warning C4305: '=': truncation from 'double' to 'float'
+D:\GitHub\CSUY3113\Project6\SDLProject\MainMenu.cpp(59,38): warning C4305: '=': truncation from 'double' to 'float'
+  SDLProject.vcxproj -> D:\GitHub\CSUY3113\Project6\SDLProject\Debug\SDLProject.exe
